@@ -1,0 +1,9 @@
+{
+    "name": "gen-test-extension",
+    "version": "0.1.0",
+    "description": "Scaffold-ETH gen-test advanced extension: auto-injection di script e devDependencies",
+    "main": "packages/hardhat/scripts/gen-test.js",
+    "keywords": ["scaffold-eth", "extension", "hardhat", "test-generator"],
+    "license": "MIT"
+  }
+  
