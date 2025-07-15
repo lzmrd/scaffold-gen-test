@@ -1,0 +1,22 @@
+const { expect } = require("chai");
+const { ethers } = require("hardhat");
+
+describe("<%= contractName %>", function () {
+  let contract;
+  before(async function () {
+    const Factory = await ethers.getContractFactory("<%= contractName %>");
+    contract = await Factory.deploy();
+    await contract.deployed();
+  });
+
+  it("deploys successfully", async function () {
+    expect(contract.address).to.be.properAddress;
+  });
+
+  // Puoi usare l'ABI per generare ulteriori stub di test:
+  <% abi.forEach(func => { if (func.type === 'function') { %>
+  it("stub for <%= func.name %>()", async function () {
+    // TODO: test <%= func.name %>
+  });
+  <% }}); %>
+});
