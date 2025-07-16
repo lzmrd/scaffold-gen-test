@@ -1,32 +1,26 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import type { NextPage } from "next"
-import { useAccount } from "wagmi"
+import Link from "next/link";
+import type { NextPage } from "next";
+import { useAccount } from "wagmi";
 import {
-  HeartIcon,
+  BuildingStorefrontIcon,
   ChartBarIcon,
   GiftIcon,
-  BuildingStorefrontIcon,
-  UserGroupIcon,
-  // Add LeafIcon or use an alternative
-} from "@heroicons/react/24/outline"
-import { Address } from "~~/components/scaffold-eth"
+  HeartIcon,
+  UserGroupIcon, // Add LeafIcon or use an alternative
+} from "@heroicons/react/24/outline";
+import { Address } from "~~/components/scaffold-eth";
 
 // Custom LeafIcon component if not available in @heroicons/react
 const LeafIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M5 3l14 6-3 5-4-3-4 3-3-5z"
-    />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3l14 6-3 5-4-3-4 3-3-5z" />
   </svg>
-)
+);
 
 const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount()
+  const { address: connectedAddress } = useAccount();
 
   return (
     <>
@@ -43,7 +37,8 @@ const Home: NextPage = () => {
               <span className="block text-4xl font-bold text-green-700">Unwasted Meals</span>
             </h1>
             <p className="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
-              We fight food waste and poverty in Naples through blockchain tokens that certify every meal saved and donated to social canteens.
+              We fight food waste and poverty in Naples through blockchain tokens that certify every meal saved and
+              donated to social canteens.
             </p>
           </div>
 
@@ -58,7 +53,7 @@ const Home: NextPage = () => {
               <div className="flex flex-col items-center">
                 <BuildingStorefrontIcon className="h-8 w-8 text-green-600 mb-2" />
                 <h4 className="font-medium text-green-700">Donate Food</h4>
-                <p className="text-sm text-gray-600">Supermarkets and restaurants donate food that's still good</p>
+                <p className="text-sm text-gray-600">Supermarkets and restaurants donate food that&apos;s still good</p>
               </div>
               <div className="flex flex-col items-center">
                 <ChartBarIcon className="h-8 w-8 text-green-600 mb-2" />
@@ -100,9 +95,7 @@ const Home: NextPage = () => {
                   <ChartBarIcon className="h-8 w-8 text-blue-600" />
                 </div>
                 <h3 className="text-lg font-semibold text-blue-800 mb-3">Monitor Impact</h3>
-                <p className="text-gray-600 mb-4">
-                  View donation statistics and the impact on the community.
-                </p>
+                <p className="text-gray-600 mb-4">View donation statistics and the impact on the community.</p>
                 <Link
                   href="/impact"
                   className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -155,7 +148,7 @@ const Home: NextPage = () => {
         </div>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

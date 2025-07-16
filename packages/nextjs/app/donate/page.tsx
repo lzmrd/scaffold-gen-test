@@ -13,6 +13,24 @@ import { CheckCircleIcon, ClockIcon, HeartIcon, MapPinIcon, XMarkIcon } from "@h
 
 // packages/nextjs/app/donate/page.tsx
 
+// packages/nextjs/app/donate/page.tsx
+
+// packages/nextjs/app/donate/page.tsx
+
+// packages/nextjs/app/donate/page.tsx
+
+// packages/nextjs/app/donate/page.tsx
+
+// packages/nextjs/app/donate/page.tsx
+
+// packages/nextjs/app/donate/page.tsx
+
+// packages/nextjs/app/donate/page.tsx
+
+// packages/nextjs/app/donate/page.tsx
+
+// packages/nextjs/app/donate/page.tsx
+
 // Load Leaflet components only on client to avoid SSR errors
 const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import("react-leaflet").then(mod => mod.TileLayer), { ssr: false });
