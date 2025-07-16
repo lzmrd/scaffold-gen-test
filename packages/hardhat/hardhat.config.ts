@@ -11,6 +11,9 @@ import "hardhat-deploy";
 import "hardhat-deploy-ethers";
 import { task } from "hardhat/config";
 import generateTsAbis from "./scripts/generateTsAbis";
+import "@nomicfoundation/hardhat-ignition";
+import "@nomiclabs/hardhat-ethers";
+
 
 // If not set, it uses ours Alchemy's default API key.
 // You can get your own at https://dashboard.alchemyapi.io
@@ -56,6 +59,11 @@ const config: HardhatUserConfig = {
     mainnet: {
       url: `https://eth-mainnet.alchemyapi.io/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey],
+    },
+    fuji: {
+      url: process.env.FUJI_RPC_URL,
+      chainId: 43113,
+      accounts: process.env.PRIVATE_KEY ? [ `0x${process.env.PRIVATE_KEY}` ] : [],
     },
     sepolia: {
       url: `https://eth-sepolia.g.alchemy.com/v2/${providerApiKey}`,
