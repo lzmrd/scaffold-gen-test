@@ -1,41 +1,41 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./UnwastedMeals.sol";
 
-/// @title FoodRescuePlatform
-/// @notice Registra donazioni e minta token UMEALS al donatore
 contract FoodRescuePlatform is AccessControl {
     bytes32 public constant DONOR_ROLE = keccak256("DONOR_ROLE");
-    UnwastedMeals public immutable token;
+    UnwastedMeals public token;
+    uint256 public totalDonated;
 
-    event DonationRecorded(address indexed donor, uint256 kilos, uint256 amountMinted);
+    event Donation(address indexed donor, uint256 quantity);
 
-    constructor(UnwastedMeals _token) {
-        token = _token;
+    constructor(address tokenAddress) {
+        token = UnwastedMeals(tokenAddress);
+        // Assegna DEFAULT_ADMIN_ROLE e DONOR_ROLE a chi deploya
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        // opzionale: puoi creare un ruolo DONOR_ROLE per approvare solo utenti registrati
         _grantRole(DONOR_ROLE, msg.sender);
     }
 
-    /// @notice Registra un nuovo donatore (se usi un ruolo)
-    function registerDonor(address donor) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        _grantRole(DONOR_ROLE, donor);
+    // Solo l'admin può abilitare nuovi donatori
+    function grantDonor(address account) external {
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Only admin can grant donors");
+        grantRole(DONOR_ROLE, account);
     }
 
-    /// @notice Chiama questo metodo dopo aver verificato off-chain la donazione
-    /// @param kilos Peso in kg di cibo salvato
-    function recordDonation(uint256 kilos)
-        external
-        onlyRole(DONOR_ROLE)  // o togli il check se chiunque può chiamare
-    {
-        require(kilos > 0, "Devi specificare almeno 1 kg");
-        // calcola quanti token in base ai decimali (18)
-        uint256 amount = kilos * (10 ** token.decimals());
-        // mint dei token direttamente al chiamante
-        token.mint(msg.sender, amount);
+    /*
+    // OPTIONAL: permettere a chiunque di auto-registrarsi come donatore
+    function registerAsDonor() external {
+        _grantRole(DONOR_ROLE, msg.sender);
+    }
+    */
 
-        emit DonationRecorded(msg.sender, kilos, amount);
+    function recordDonation(uint256 kilos) external {
+        require(hasRole(DONOR_ROLE, msg.sender), "Must have donor role");
+        totalDonated += kilos;
+        // Emissione di 1 token MEAL per kg donato
+        token.mint(msg.sender, kilos * (10 ** token.decimals()));
+        emit Donation(msg.sender, kilos);
     }
 }

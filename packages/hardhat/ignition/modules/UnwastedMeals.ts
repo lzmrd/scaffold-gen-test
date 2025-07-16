@@ -22,3 +22,18 @@ export default buildModule("UnwastedMeals", (m) => {
   // 4) Esportiamo gli handle per eventuali dipendenze o logging
   return { token, platform };
 });
+
+// Fuji Testnet:
+// Deployed Addresses
+
+// UnwastedMeals#UnwastedMeals - 0x25CFA7a894dbA05Fb1E0AE8e9c7d83000775dd2D
+// UnwastedMeals#FoodRescuePlatform - 0xf9B54077E7bB77a63F5FB771B434D64A7C0626f5
+
+
+
+// baseSepolia:
+//Deployed Addresses
+
+//UnwastedMeals#UnwastedMeals - 0x25CFA7a894dbA05Fb1E0AE8e9c7d83000775dd2D
+//UnwastedMeals#FoodRescuePlatform - 0xf9B54077E7bB77a63F5FB771B434D64A7C0626f5
+

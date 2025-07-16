@@ -37,7 +37,7 @@ const Home: NextPage = () => {
               <span className="block text-4xl font-bold text-green-700">Unwasted Meals</span>
             </h1>
             <p className="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
-              We fight food waste and poverty in Naples through blockchain tokens that certify every meal saved and
+              We fight food waste and poverty in Italy through blockchain tokens that certify every meal saved and
               donated to social canteens.
             </p>
           </div>

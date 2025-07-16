@@ -8,26 +8,9 @@ import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconShadowUrl from "leaflet/dist/images/marker-shadow.png";
 import "leaflet/dist/leaflet.css";
+import { parseEther } from "viem";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { CheckCircleIcon, ClockIcon, HeartIcon, MapPinIcon, XMarkIcon } from "@heroicons/react/24/outline";
-
-// packages/nextjs/app/donate/page.tsx
-
-// packages/nextjs/app/donate/page.tsx
-
-// packages/nextjs/app/donate/page.tsx
-
-// packages/nextjs/app/donate/page.tsx
-
-// packages/nextjs/app/donate/page.tsx
-
-// packages/nextjs/app/donate/page.tsx
-
-// packages/nextjs/app/donate/page.tsx
-
-// packages/nextjs/app/donate/page.tsx
-
-// packages/nextjs/app/donate/page.tsx
 
 // packages/nextjs/app/donate/page.tsx
 
@@ -108,17 +91,336 @@ const businesses: Business[] = [
   },
 ];
 
+// FoodRescuePlatform contract ABI (simplified)
+const FOOD_RESCUE_PLATFORM_ABI = [
+  {
+    inputs: [
+      {
+        internalType: "contract UnwastedMeals",
+        name: "_token",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [],
+    name: "AccessControlBadConfirmation",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "neededRole",
+        type: "bytes32",
+      },
+    ],
+    name: "AccessControlUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "donor",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "kilos",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amountMinted",
+        type: "uint256",
+      },
+    ],
+    name: "DonationRecorded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "previousAdminRole",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "newAdminRole",
+        type: "bytes32",
+      },
+    ],
+    name: "RoleAdminChanged",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleGranted",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+    ],
+    name: "RoleRevoked",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "DEFAULT_ADMIN_ROLE",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "DONOR_ROLE",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+    ],
+    name: "getRoleAdmin",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "grantRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "hasRole",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "kilos",
+        type: "uint256",
+      },
+    ],
+    name: "recordDonation",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "donor",
+        type: "address",
+      },
+    ],
+    name: "registerDonor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "callerConfirmation",
+        type: "address",
+      },
+    ],
+    name: "renounceRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "role",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "revokeRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes4",
+        name: "interfaceId",
+        type: "bytes4",
+      },
+    ],
+    name: "supportsInterface",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "token",
+    outputs: [
+      {
+        internalType: "contract UnwastedMeals",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+];
+// Replace with your actual deployed contract address
+const FOOD_RESCUE_PLATFORM_ADDRESS = "0xf9B54077E7bB77a63F5FB771B434D64A7C0626f5" as const;
+
 const DonatePage: React.FC = () => {
   const { address: connectedAddress } = useAccount();
   const [selectedBusiness, setSelectedBusiness] = useState<Business | null>(null);
   const [donationAmount, setDonationAmount] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showMap, setShowMap] = useState(true);
   const [txStatus, setTxStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
 
-  const { writeContract, data: hash } = useWriteContract();
+  const { writeContract, data: hash, error } = useWriteContract();
   const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
 
-  // Configure Leaflet default icon - MOVED INSIDE THE COMPONENT
+  // Configure Leaflet default icon
   useEffect(() => {
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: iconRetinaUrl.src || iconRetinaUrl,
@@ -127,34 +429,74 @@ const DonatePage: React.FC = () => {
     });
   }, []);
 
-  const handleSelect = (b: Business) => {
-    setSelectedBusiness(b);
-    setIsModalOpen(true);
-  };
-
-  const handleDonate = async () => {
-    if (!selectedBusiness || !donationAmount || !connectedAddress) return;
-    setTxStatus("pending");
-    try {
-      await writeContract({
-        address: "0xYourPlatformContractAddress",
-        abi: [
-          /* FoodRescuePlatform ABI */
-        ],
-        functionName: "recordDonation",
-        args: [Math.floor(parseFloat(donationAmount))],
-      });
+  // Handle transaction success
+  useEffect(() => {
+    if (hash && !isConfirming) {
       setTxStatus("success");
-    } catch {
+    }
+  }, [hash, isConfirming]);
+
+  // Handle transaction error
+  useEffect(() => {
+    if (error) {
+      console.error("Contract write error:", error);
+      setTxStatus("error");
+    }
+  }, [error]);
+
+  const handleSelect = async (business: Business) => {
+    setSelectedBusiness(business);
+
+    // Prompt user for donation amount
+    const amount = prompt(`How many kg of food do you want to donate to ${business.name}?`);
+
+    if (!amount || !connectedAddress) {
+      // If user cancels or no wallet connected, reset state
+      setSelectedBusiness(null);
+      return;
+    }
+
+    // Validate amount
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+      alert("Please enter a valid positive number");
+      setSelectedBusiness(null);
+      return;
+    }
+
+    setDonationAmount(amount);
+    setShowMap(false);
+    setTxStatus("pending");
+
+    try {
+      // Calculate donation value (example: 0.01 ETH per kg)
+      const donationValue = parseEther((parsedAmount * 0.01).toString());
+
+      console.log("Initiating transaction with:", {
+        address: FOOD_RESCUE_PLATFORM_ADDRESS,
+        functionName: "recordDonation",
+        args: [BigInt(Math.floor(parsedAmount)), BigInt(business.id)],
+        value: donationValue,
+      });
+
+      await writeContract({
+        address: FOOD_RESCUE_PLATFORM_ADDRESS,
+        abi: FOOD_RESCUE_PLATFORM_ABI,
+        functionName: "recordDonation",
+        args: [BigInt(Math.floor(parsedAmount)), BigInt(business.id)],
+        value: donationValue,
+      });
+    } catch (err) {
+      console.error("Transaction failed:", err);
       setTxStatus("error");
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const resetState = () => {
     setSelectedBusiness(null);
     setDonationAmount("");
     setTxStatus("idle");
+    setShowMap(true);
   };
 
   // If wallet is not connected
@@ -186,113 +528,113 @@ const DonatePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main grid */}
-      <div className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
-        {/* Map */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="p-4 bg-green-50 border-b flex items-center">
-              <MapPinIcon className="h-6 w-6 text-green-800 mr-2" />
-              <h2 className="text-xl font-semibold text-green-800">Partner Map</h2>
+      {/* Transaction Status Screen */}
+      {!showMap && selectedBusiness && (
+        <div className="max-w-2xl mx-auto px-4 py-8">
+          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Donation to {selectedBusiness.name}</h2>
+              <p className="text-gray-600">{selectedBusiness.description}</p>
             </div>
-            <MapContainer center={[40.8518, 14.2681]} zoom={13} className="h-96 w-full" scrollWheelZoom={false}>
-              <TileLayer
-                attribution='© <a href="https://osm.org">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
-                subdomains={["a", "b", "c"]}
-                crossOrigin={true}
-              />
-              {businesses.map(b => (
-                <Marker key={b.id} position={[b.lat, b.lng]} eventHandlers={{ click: () => handleSelect(b) }}>
-                  <Popup>
-                    <strong>{b.name}</strong>
-                    <br />
-                    {b.address}
-                    <br />
-                    <button className="mt-2 px-3 py-1 bg-green-600 text-white rounded" onClick={() => handleSelect(b)}>
-                      Donate here
-                    </button>
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
+
+            {txStatus === "pending" && (
+              <div className="flex flex-col items-center">
+                <ClockIcon className="h-16 w-16 text-blue-500 animate-spin mb-4" />
+                <h3 className="text-xl font-semibold text-blue-600 mb-2">Processing Transaction...</h3>
+                <p className="text-gray-600 mb-4">Donating {donationAmount} kg of food</p>
+                <p className="text-sm text-gray-500">Please confirm the transaction in your wallet</p>
+              </div>
+            )}
+
+            {txStatus === "success" && (
+              <div className="flex flex-col items-center">
+                <CheckCircleIcon className="h-16 w-16 text-green-500 mb-4" />
+                <h3 className="text-xl font-semibold text-green-600 mb-2">Donation Successful!</h3>
+                <p className="text-gray-600 mb-4">You donated {donationAmount} kg of food</p>
+                <p className="text-sm text-gray-500 mb-6">You will receive ~{donationAmount} UMEALS tokens</p>
+                <button
+                  onClick={resetState}
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                >
+                  Make Another Donation
+                </button>
+              </div>
+            )}
+
+            {txStatus === "error" && (
+              <div className="flex flex-col items-center">
+                <XMarkIcon className="h-16 w-16 text-red-500 mb-4" />
+                <h3 className="text-xl font-semibold text-red-600 mb-2">Transaction Failed</h3>
+                <p className="text-gray-600 mb-4">There was an error processing your donation. Please try again.</p>
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 max-w-md">
+                    <p className="text-sm text-red-700">Error: {error.message || "Unknown error"}</p>
+                  </div>
+                )}
+                <button onClick={resetState} className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
+                  Try Again
+                </button>
+              </div>
+            )}
           </div>
         </div>
+      )}
 
-        {/* Partner list */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800">Available Partners</h2>
-          {businesses.map(b => (
-            <div
-              key={b.id}
-              className="bg-white p-4 rounded-lg shadow cursor-pointer hover:shadow-md"
-              onClick={() => handleSelect(b)}
-            >
-              <h3 className="font-semibold text-gray-800">{b.name}</h3>
-              <p className="text-sm text-gray-600">{b.type}</p>
-              <p className="text-xs text-gray-500">{b.address}</p>
-              <p className="mt-2 text-sm">{b.description}</p>
-              <div className="mt-2 inline-block bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">
-                {b.mealsNeeded} meals needed
+      {/* Main grid - Only show when map is visible */}
+      {showMap && (
+        <div className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-3 gap-8">
+          {/* Map */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="p-4 bg-green-50 border-b flex items-center">
+                <MapPinIcon className="h-6 w-6 text-green-800 mr-2" />
+                <h2 className="text-xl font-semibold text-green-800">Partner Map</h2>
               </div>
+              <MapContainer center={[40.8518, 14.2681]} zoom={13} className="h-96 w-full" scrollWheelZoom={false}>
+                <TileLayer
+                  attribution='© <a href="https://osm.org">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
+                  subdomains={["a", "b", "c"]}
+                  crossOrigin={true}
+                />
+                {businesses.map(b => (
+                  <Marker key={b.id} position={[b.lat, b.lng]} eventHandlers={{ click: () => handleSelect(b) }}>
+                    <Popup>
+                      <strong>{b.name}</strong>
+                      <br />
+                      {b.address}
+                      <br />
+                      <button
+                        className="mt-2 px-3 py-1 bg-green-600 text-white rounded"
+                        onClick={() => handleSelect(b)}
+                      >
+                        Donate here
+                      </button>
+                    </Popup>
+                  </Marker>
+                ))}
+              </MapContainer>
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
 
-      {/* Donation modal */}
-      {isModalOpen && selectedBusiness && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl max-w-md w-full p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold">Donate to {selectedBusiness.name}</h3>
-              <button onClick={closeModal}>
-                <XMarkIcon className="h-6 w-6 text-gray-500 hover:text-gray-700" />
-              </button>
-            </div>
-            <p className="text-sm text-gray-600 mb-4">{selectedBusiness.description}</p>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Kg of food saved</label>
-            <input
-              type="number"
-              step="1"
-              min="1"
-              value={donationAmount}
-              onChange={e => setDonationAmount(e.target.value)}
-              className="w-full border-gray-300 rounded-lg p-2 focus:ring-green-500 focus:border-green-500"
-              placeholder="e.g. 5"
-            />
-            <p className="mt-1 text-xs text-gray-500">You will receive ~{donationAmount || 0} UMEALS</p>
-            <div className="mt-6 flex space-x-3">
-              <button
-                onClick={closeModal}
-                className="flex-1 border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50"
+          {/* Partner list */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-gray-800">Available Partners</h2>
+            {businesses.map(b => (
+              <div
+                key={b.id}
+                className="bg-white p-4 rounded-lg shadow cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => handleSelect(b)}
               >
-                Cancel
-              </button>
-              <button
-                onClick={handleDonate}
-                disabled={!donationAmount || txStatus === "pending"}
-                className="flex-1 bg-green-600 text-white rounded-lg px-4 py-2 disabled:opacity-50 flex items-center justify-center"
-              >
-                {txStatus === "pending" || isConfirming ? (
-                  <>
-                    <ClockIcon className="h-5 w-5 mr-2 animate-spin" />
-                    Waiting…
-                  </>
-                ) : txStatus === "success" ? (
-                  <>
-                    <CheckCircleIcon className="h-5 w-5 mr-2" />
-                    Completed!
-                  </>
-                ) : (
-                  <>
-                    <HeartIcon className="h-5 w-5 mr-2" />
-                    Confirm
-                  </>
-                )}
-              </button>
-            </div>
-            {txStatus === "error" && <p className="mt-4 text-sm text-red-600">Transaction error, please try again.</p>}
+                <h3 className="font-semibold text-gray-800">{b.name}</h3>
+                <p className="text-sm text-gray-600">{b.type}</p>
+                <p className="text-xs text-gray-500">{b.address}</p>
+                <p className="mt-2 text-sm">{b.description}</p>
+                <div className="mt-2 inline-block bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs">
+                  {b.mealsNeeded} meals needed
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}
