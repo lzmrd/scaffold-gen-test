@@ -2,12 +2,32 @@
 "use client";
 
 import React from "react";
-import { WagmiConfig } from "wagmi";
 import { chains, wagmiConfig } from "../src/wagmi";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
+import { WagmiConfig } from "wagmi";
 import { ScaffoldEthAppWithProviders } from "~~/components/ScaffoldEthAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
+
+// app/ClientProviders.tsx
 
 // app/ClientProviders.tsx
 

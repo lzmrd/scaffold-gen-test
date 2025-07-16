@@ -1,3 +1,4 @@
+import "ts-node/register";
 import * as dotenv from "dotenv";
 dotenv.config();
 import { HardhatUserConfig } from "hardhat/config";
@@ -13,6 +14,7 @@ import { task } from "hardhat/config";
 import generateTsAbis from "./scripts/generateTsAbis";
 import "@nomicfoundation/hardhat-ignition";
 import "@nomiclabs/hardhat-ethers";
+
 
 
 // If not set, it uses ours Alchemy's default API key.
@@ -134,6 +136,7 @@ const config: HardhatUserConfig = {
       accounts: [deployerPrivateKey],
     },
   },
+
   // Configuration for harhdat-verify plugin
   etherscan: {
     apiKey: etherscanApiKey,
