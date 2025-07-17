@@ -11,6 +11,10 @@ import {
   UserGroupIcon, // Add LeafIcon or use an alternative
 } from "@heroicons/react/24/outline";
 import { Address } from "~~/components/scaffold-eth";
+import Image from "next/image";
+
+
+
 
 // Custom LeafIcon component if not available in @heroicons/react
 const LeafIcon = ({ className }: { className?: string }) => (
@@ -27,11 +31,9 @@ const Home: NextPage = () => {
       <div className="flex items-center flex-col grow pt-10">
         <div className="px-5">
           <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
-              <div className="bg-green-100 p-4 rounded-full">
-                <LeafIcon className="h-12 w-12 text-green-600" />
-              </div>
-            </div>
+           <div className="flex justify-center mb-4">
+              <Image src="/logo.png" alt="UnwastedMeals Logo" width={196} height={196} />
+           </div>
             <h1 className="text-center">
               <span className="block text-2xl mb-2 text-gray-600">Welcome to</span>
               <span className="block text-4xl font-bold text-green-700">Unwasted Meals</span>

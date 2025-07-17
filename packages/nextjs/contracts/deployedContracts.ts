@@ -5,147 +5,75 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  31337: {
-    YourContract: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  43113: {
+    FoodRescuePlatform : {
+      address: "0x7c3D48B2556E5c1f9b99AD029e8ec1ae85629bFe",
       abi: [
         {
-          inputs: [
-            {
-              internalType: "address",
-              name: "_owner",
-              type: "address",
-            },
-          ],
+          inputs: [{ internalType: "address", name: "tokenAddress", type: "address" }],
           stateMutability: "nonpayable",
           type: "constructor",
+        },
+        { inputs: [], name: "AccessControlBadConfirmation", type: "error" },
+        {
+          inputs: [
+            { internalType: "address", name: "account", type: "address" },
+            { internalType: "bytes32", name: "neededRole", type: "bytes32" },
+          ],
+          name: "AccessControlUnauthorizedAccount",
+          type: "error",
         },
         {
           anonymous: false,
           inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "greetingSetter",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "string",
-              name: "newGreeting",
-              type: "string",
-            },
-            {
-              indexed: false,
-              internalType: "bool",
-              name: "premium",
-              type: "bool",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "value",
-              type: "uint256",
-            },
+            { indexed: true, internalType: "address", name: "donor", type: "address" },
+            { indexed: false, internalType: "uint256", name: "quantity", type: "uint256" },
           ],
-          name: "GreetingChange",
+          name: "Donation",
           type: "event",
         },
         {
-          inputs: [],
-          name: "greeting",
-          outputs: [
-            {
-              internalType: "string",
-              name: "",
-              type: "string",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "owner",
-          outputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [],
-          name: "premium",
-          outputs: [
-            {
-              internalType: "bool",
-              name: "",
-              type: "bool",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
+          anonymous: false,
           inputs: [
-            {
-              internalType: "string",
-              name: "_newGreeting",
-              type: "string",
-            },
+            { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+            { indexed: true, internalType: "bytes32", name: "previousAdminRole", type: "bytes32" },
+            { indexed: true, internalType: "bytes32", name: "newAdminRole", type: "bytes32" },
           ],
-          name: "setGreeting",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
+          name: "RoleAdminChanged",
+          type: "event",
         },
         {
-          inputs: [],
-          name: "totalCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
+          anonymous: false,
           inputs: [
-            {
-              internalType: "address",
-              name: "",
-              type: "address",
-            },
+            { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+            { indexed: true, internalType: "address", name: "account", type: "address" },
+            { indexed: true, internalType: "address", name: "sender", type: "address" },
           ],
-          name: "userGreetingCounter",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
+          name: "RoleGranted",
+          type: "event",
         },
         {
-          inputs: [],
-          name: "withdraw",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
+          anonymous: false,
+          inputs: [
+            { indexed: true, internalType: "bytes32", name: "role", type: "bytes32" },
+            { indexed: true, internalType: "address", name: "account", type: "address" },
+            { indexed: true, internalType: "address", name: "sender", type: "address" },
+          ],
+          name: "RoleRevoked",
+          type: "event",
         },
-        {
-          stateMutability: "payable",
-          type: "receive",
-        },
+        { inputs: [], name: "DEFAULT_ADMIN_ROLE", outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }], stateMutability: "view", type: "function" },
+        { inputs: [], name: "DONOR_ROLE", outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }], stateMutability: "view", type: "function" },
+        { inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }], name: "getRoleAdmin", outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }], stateMutability: "view", type: "function" },
+        { inputs: [{ internalType: "address", name: "account", type: "address" }], name: "grantDonor", outputs: [], stateMutability: "nonpayable", type: "function" },
+        { inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }, { internalType: "address", name: "account", type: "address" }], name: "grantRole", outputs: [], stateMutability: "nonpayable", type: "function" },
+        { inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }, { internalType: "address", name: "account", type: "address" }], name: "hasRole", outputs: [{ internalType: "bool", name: "", type: "bool" }], stateMutability: "view", type: "function" },
+        { inputs: [{ internalType: "uint256", name: "kilos", type: "uint256" }], name: "recordDonation", outputs: [], stateMutability: "nonpayable", type: "function" },
+        { inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }, { internalType: "address", name: "callerConfirmation", type: "address" }], name: "renounceRole", outputs: [], stateMutability: "nonpayable", type: "function" },
+        { inputs: [{ internalType: "bytes32", name: "role", type: "bytes32" }, { internalType: "address", name: "account", type: "address" }], name: "revokeRole", outputs: [], stateMutability: "nonpayable", type: "function" },
+        { inputs: [{ internalType: "bytes4", name: "interfaceId", type: "bytes4" }], name: "supportsInterface", outputs: [{ internalType: "bool", name: "", type: "bool" }], stateMutability: "view", type: "function" },
+        { inputs: [], name: "token", outputs: [{ internalType: "contract UnwastedMeals", name: "", type: "address" }], stateMutability: "view", type: "function" },
+        { inputs: [], name: "totalDonated", outputs: [{ internalType: "uint256", name: "", type: "uint256" }], stateMutability: "view", type: "function" },
       ],
       inheritedFunctions: {},
     },
